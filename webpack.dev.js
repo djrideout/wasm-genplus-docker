@@ -11,7 +11,6 @@ module.exports = merge(common, {
             // for sourcemap - src/main/c
             path.join(__dirname, '/'), // eslint-disable-line
         ],
-        port: process.env['PORT'],
         open: true,
         // host: '0.0.0.0',
         // disableHostCheck: true

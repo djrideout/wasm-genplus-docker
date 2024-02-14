@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+    wasm-genplus:
+        build:
+          context: .
+          args:
+            # Forwarding the environment variables from .env into the container through args
+            ENVIRONMENT: "${ENVIRONMENT:-DEV}" # Change ENVIRONMENT to something else to test prod using docker compose
+            ROM_PATH: "${ROM_PATH:-roms/game.bin}"
+            PORT: ${PORT:-9000}
+        volumes:
+          - ./src:/app/src:consistent
+          - ./docs/roms:/app/docs/roms:consistent
+        ports:
+          # Environment variables are automatically loaded into docker compose itself from .env
+          - ${PORT:-9000}:${PORT:-9000}

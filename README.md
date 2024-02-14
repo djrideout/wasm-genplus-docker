@@ -6,59 +6,38 @@
 
 ![](https://github.com/h1romas4/wasm-genplus/blob/master/assets/ipad-wasm.jpg)
 
-## Build with Local
-
-### Require
-
-* [Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html)
-
-```
-$ source ./emsdk_env.sh
-Setting up EMSDK environment (suppress these messages with EMSDK_QUIET=1)
-Adding directories to PATH:
-PATH += /home/hiromasa/devel/toolchain/emsdk
-PATH += /home/hiromasa/devel/toolchain/emsdk/upstream/emscripten
-
-Setting environment variables:
-PATH = /home/hiromasa/devel/toolchain/emsdk:/home/hiromasa/devel/toolchain/emsdk/upstream/emscripten:/home/hiromasa/devel/toolchain/appimage:/home/hiromasa/.wasmtime/bin:/home/hiromasa/devel/msx/z88dk/bin:/home/hiromasa/.wasmer/bin:/home/hiromasa/.local/bin:/home/hiromasa/.cargo/bin:/home/hiromasa/.sdkman/candidates/java/current/bin:/home/hiromasa/.sdkman/candidates/groovy/current/bin:/home/hiromasa/.sdkman/candidates/gradle/current/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/hiromasa/.dotnet/tools
-EMSDK = /home/hiromasa/devel/toolchain/emsdk
-EMSDK_NODE = /home/hiromasa/devel/toolchain/emsdk/node/16.20.0_64bit/bin/node
-
-$ emcc -v
-emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.48 (e967e20b4727956a30592165a3c1cde5c67fa0a8)
-clang version 18.0.0 (https://github.com/llvm/llvm-project a54545ba6514802178cf7cf1c1dd9f7efbf3cde7)
-Target: wasm32-unknown-emscripten
-Thread model: posix
-InstalledDir: /home/hiromasa/devel/toolchain/emsdk/upstream/bin
-```
-
-### Build
-
-**Emscripten**
-
-```
-git clone --recursive https://github.com/h1romas4/wasm-genplus.git
-cd wasm-genplus
-mkdir build && cd build
-emcmake cmake ..
-emmake make
-```
-
-**webpack**
-
-```
-cd ..
-npm install
-npm run start
-```
+### Build with Docker
 
 **Setting**
 
-`.env`
+Optionally set environment variables in .env
 
 ```
-ROM_PATH="rom/sonic2.bin"
+# Default is "PROD" when using Dockerfile alone, "DEV" when using docker compose
+ENVIRONMENT="DEV"
+
+# ROM endpoint to load game in the browser. Default is "roms/game.bin" in both cases
+ROM_PATH="roms/game.bin"
+
+# Default is 80 when using Dockerfile alone, 9000 when using docker compose
 PORT=9000
+```
+
+**Docker**
+
+```
+# For development
+docker compose up --build
+
+# For production
+# Ideally use the Dockerfile as a service in another docker-compose file in production instead of these commands.
+# With arguments
+source .env # Set local variables from .env file
+docker build --build-arg "ENVIRONMENT=${ENVIRONMENT}" --build-arg "ROM_PATH=${ROM_PATH}" --build-arg "PORT=${PORT}" -t wasm-genplus .
+docker run -p 127.0.0.1:${PORT}:${PORT} wasm-genplus
+# Without arguments
+docker build -t wasm-genplus .
+docker run -p 127.0.0.1:80:80 wasm-genplus
 ```
 
 **Play**

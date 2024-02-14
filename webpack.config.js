@@ -15,9 +15,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/main/html/index.html'
         }),
+        // These environment variables are what are passed to the source code
         new webpack.EnvironmentPlugin({
-            'ROM_PATH': 'rom/sonic2.bin',
-            'PORT': 9000
+            'ROM_PATH': JSON.stringify(process.env.ROM_PATH)
         })
     ],
     externals: {
