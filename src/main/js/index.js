@@ -3,8 +3,8 @@ import './genplus.wasm';
 import process from 'process'
 
 const ROM_PATH = process.env['ROM_PATH'];
-const CANVAS_WIDTH = 640;
-const CANVAS_HEIGHT = 480;
+const CANVAS_WIDTH = 320;
+const CANVAS_HEIGHT = 224;
 const SOUND_FREQUENCY = 44100;
 const SAMPLING_PER_FPS = 736;
 const GAMEPAD_API_INDEX = 32;
@@ -47,7 +47,7 @@ const message = function(mes) {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
     canvasContext.font = "24px monospace";
     canvasContext.fillStyle = "#fff";
-    canvasContext.fillText(mes, 250, 250);
+    canvasContext.fillText(mes, 90, 110);
     canvasContext.font = "12px monospace";
     canvasContext.fillStyle = "#0f0";
 };
@@ -210,6 +210,5 @@ const loop = function() {
             audioBuffer.getChannelData(1).set(audio_r);
             sound(audioBuffer);
         }
-        canvasContext.fillText("FPS " + fps, 0, 480 - 16);
     }
 };
