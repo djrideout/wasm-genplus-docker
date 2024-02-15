@@ -14,6 +14,8 @@ WORKDIR $HOME/app
 RUN npm install
 COPY . $HOME/app
 # Setting these arguments as environment variables using ENV makes them available when the container is running
+ARG TITLE="wasm-genplus"
+ENV TITLE=${TITLE}
 ARG ENVIRONMENT="PROD"
 ENV ENVIRONMENT=${ENVIRONMENT}
 ARG PORT=80

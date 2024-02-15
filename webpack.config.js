@@ -17,6 +17,7 @@ module.exports = {
         }),
         // These environment variables are what are passed to the source code
         new webpack.EnvironmentPlugin({
+            'TITLE': JSON.stringify(process.env.TITLE),
             'ROM_PATH': JSON.stringify(process.env.ROM_PATH)
         })
     ],

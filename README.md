@@ -13,6 +13,9 @@
 Optionally set environment variables in .env
 
 ```
+# Title for the page. Default is "wasm-genplus"
+TITLE="wasm-genplus"
+
 # Default is "PROD" when using Dockerfile alone, "DEV" when using docker compose
 ENVIRONMENT="DEV"
 
@@ -33,7 +36,7 @@ docker compose up --build
 # Ideally use the Dockerfile as a service in another docker-compose file in production instead of these commands.
 # With arguments
 source .env # Set local variables from .env file
-docker build --build-arg "ENVIRONMENT=${ENVIRONMENT}" --build-arg "ROM_PATH=${ROM_PATH}" --build-arg "PORT=${PORT}" -t wasm-genplus .
+docker build --build-arg "ENVIRONMENT=${ENVIRONMENT}" --build-arg "TITLE=${TITLE}" --build-arg "ROM_PATH=${ROM_PATH}" --build-arg "PORT=${PORT}" -t wasm-genplus .
 docker run -p 127.0.0.1:${PORT}:${PORT} wasm-genplus
 # Without arguments
 docker build -t wasm-genplus .

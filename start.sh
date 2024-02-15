@@ -5,7 +5,7 @@ source $HOME/.emsdk/emsdk_env.sh
 mkdir build
 
 if [ ${ENVIRONMENT} = "DEV" ]; then
-  npx webpack-dev-server --config webpack.dev.js --port ${PORT} --env ROM_PATH=${ROM_PATH}
+  npx webpack-dev-server --config webpack.dev.js --port ${PORT} --env TITLE=${TITLE} --env ROM_PATH=${ROM_PATH}
   # You may need to run build_wasm_dev.sh if the emulator is not built in your local src folder
 else
   # Build WASM for production

@@ -2,6 +2,7 @@ import wasm from './genplus.js';
 import './genplus.wasm';
 import process from 'process'
 
+const TITLE = process.env['TITLE'];
 const ROM_PATH = process.env['ROM_PATH'];
 const CANVAS_WIDTH = 320;
 const CANVAS_HEIGHT = 224;
@@ -54,6 +55,8 @@ const message = function(mes) {
     canvasContext.font = "12px monospace";
     canvasContext.fillStyle = "#0f0";
 };
+
+document.title = TITLE;
 
 // canvas setting
 (function() {
