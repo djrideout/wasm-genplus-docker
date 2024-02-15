@@ -14,6 +14,9 @@ let gens;
 let romdata;
 let vram;
 let input;
+let keysPrev = {};
+let keysCurr = {};
+let keysNext = {};
 let initialized = false;
 let pause = false;
 
@@ -82,6 +85,14 @@ const message = function(mes) {
         start();
     };
     canvas.addEventListener('click', click, false);
+    let keydown = function (e) {
+        keysNext[e.code] = true;
+    }
+    canvas.addEventListener('keydown', keydown);
+    let keyup = function (e) {
+        keysNext[e.code] = false;
+    }
+    canvas.addEventListener('keyup', keyup);
     // start screen
     message("NOW LOADING");
     // for fps print
@@ -128,42 +139,74 @@ const start = function() {
     loop();
 };
 
+const GenButtons = {
+    UP_DOWN:     7,
+    LEFT_RIGHT:  6,
+    INPUT_A:     10,
+    INPUT_B:     11,
+    INPUT_C:     9,
+    INPUT_START: 15,
+    INPUT_X:     8,
+    INPUT_Y:     12,
+    INPUT_Z:     13,
+    INPUT_MODE:  14
+};
+
+const Keymap = {
+    ["ArrowUp"]:    { index: GenButtons.UP_DOWN, value: -1 },
+    ["ArrowDown"]:  { index: GenButtons.UP_DOWN, value: 1 },
+    ["ArrowLeft"]:  { index: GenButtons.LEFT_RIGHT, value: -1 },
+    ["ArrowRight"]: { index: GenButtons.LEFT_RIGHT, value: 1 },
+    ["KeyZ"]:       { index: GenButtons.INPUT_A, value: 1 },
+    ["KeyX"]:       { index: GenButtons.INPUT_B, value: 1 },
+    ["KeyC"]:       { index: GenButtons.INPUT_C, value: 1 },
+    ["KeyA"]:       { index: GenButtons.INPUT_X, value: 1 },
+    ["KeyS"]:       { index: GenButtons.INPUT_Y, value: 1 },
+    ["KeyD"]:       { index: GenButtons.INPUT_Z, value: 1 },
+    ["Enter"]:      { index: GenButtons.INPUT_START, value: 1 },
+    ["Backspace"]:  { index: GenButtons.INPUT_MODE, value: 1 }
+};
+const Keys = Object.keys(Keymap);
+
 const keyscan = function() {
-    input.fill(0);
-    let gamepads = navigator.getGamepads();
-    if(gamepads.length == 0) return;
-    let gamepad = gamepads[0];
-    if(gamepad == null) return;
-    if(isSafari) {
-        // for iOS Microsoft XBOX ONE
-        // UP - DOWN
-        input[7] = gamepad.axes[5] * -1;
-        // LEFT - RIGHT
-        input[6] = gamepad.axes[4];
-    } else if(gamepad.id.match(/Microsoft/)) {
-        // for Microsoft XBOX ONE
-        // axes 0 - 7
-        gamepad.axes.forEach((value, index) => {
-            input[index] = value;
-        });
-    } else {
-        // UP - DOWN
-        input[7] = gamepad.axes[1];
-        // LEFT - RIGHT
-        input[6] = gamepad.axes[0];
+    for (let key of Keys) {
+        if (input[Keymap[key].index] + Keymap[key].value === 0) {
+            // Prevent L+R/U+D
+            continue;
+        }
+        keysPrev[key] = keysCurr[key];
+        keysCurr[key] = keysNext[key];
+        if (!keysPrev[key] && keysCurr[key]) {
+            input[Keymap[key].index] = Keymap[key].value;
+        } else if (keysPrev[key] && !keysCurr[key]) {
+            input[Keymap[key].index] = 0;
+        }
     }
-    // GamePadAPI   MEGADRIVE
-    // input[8 + 2] INPUT_A;
-    // input[8 + 3] INPUT_B;
-    // input[8 + 1] INPUT_C;
-    // input[8 + 7] INPUT_START;
-    // input[8 + 0] INPUT_X;
-    // input[8 + 4] INPUT_Y;
-    // input[8 + 5] INPUT_Z;
-    // input[8 + 6] INPUT_MODE;
-    gamepad.buttons.forEach((button, index) => {
-        input[index + 8] = button.value;
-    });
+    let gamepads = navigator.getGamepads();
+    if (gamepads.length && gamepads[0] !== null) {
+        let gamepad = gamepads[0];
+        if(isSafari) {
+            // for iOS Microsoft XBOX ONE
+            // UP - DOWN
+            input[7] |= gamepad.axes[5] * -1;
+            // LEFT - RIGHT
+            input[6] |= gamepad.axes[4];
+        } else if(gamepad.id.match(/Microsoft/)) {
+            // for Microsoft XBOX ONE
+            // axes 0 - 7
+            gamepad.axes.forEach((value, index) => {
+                input[index] |= value;
+            });
+        } else {
+            // UP - DOWN
+            input[7] |= gamepad.axes[1];
+            // LEFT - RIGHT
+            input[6] |= gamepad.axes[0];
+        }
+        gamepad.buttons.forEach((button, index) => {
+            input[index + 8] |= button.value;
+        });
+    }
 };
 
 const sound = function(audioBuffer) {
