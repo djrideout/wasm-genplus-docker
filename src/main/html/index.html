@@ -1,36 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width" />
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<style>
-html, body {
-    width: 100%;
-    height: 100%;
-}
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    background-color: black;
-}
-canvas {
-    display: block;
-    background-color: black;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    image-rendering: pixelated;
-}
-</style>
-<title>wasm-genplus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+        #overlay {
+            display: flex;
+            position: absolute;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            color: white;
+            font-family: "Gloria Hallelujah", cursive;
+            font-size: max(30px, 5vw);
+            -ms-user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            text-align: center;
+        }
+        #overlay-top, #overlay-bottom {
+            display: flex;
+            flex: 1;
+            justify-content: center;
+        }
+        #overlay-top {
+            align-items: end;
+        }
+        #overlay-bottom {
+            align-items: start;
+        }
+        #screen {
+            display: block;
+            background-color: black;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+    </style>
+    <title>wasm-genplus</title>
 </head>
-<body>
-<canvas id="screen" tabindex="0"></canvas>
-</body>
+    <body>
+        <div id="overlay">
+            <div id="overlay-top">Now loading...</div>
+            <div id="overlay-bottom"></div>
+        </div>
+        <canvas id="screen" tabindex="0"></canvas>
+    </body>
 </html>

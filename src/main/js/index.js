@@ -47,15 +47,6 @@ let soundDelayTime = SAMPLING_PER_FPS * SOUND_DELAY_FRAME / SOUND_FREQUENCY;
 // for iOS
 let isSafari = false;
 
-const message = function(mes) {
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    canvasContext.font = "24px monospace";
-    canvasContext.fillStyle = "#fff";
-    canvasContext.fillText(mes, 90, 110);
-    canvasContext.font = "12px monospace";
-    canvasContext.fillStyle = "#0f0";
-};
-
 document.title = TITLE;
 
 // canvas setting
@@ -71,8 +62,9 @@ document.title = TITLE;
     canvasContext = canvas.getContext('2d');
     canvasImageData = canvasContext.createImageData(CANVAS_WIDTH, CANVAS_HEIGHT);
     // for iOS audio context
-    let click = function() {
-        canvas.removeEventListener('click', click, false);
+    let click = function (e) {
+        e.currentTarget.removeEventListener("click", click, false);
+        e.currentTarget.style.display = "none";
         // audio init
         audioContext = new (window.AudioContext || window.webkitAudioContext)({
             sampleRate: SOUND_FREQUENCY
@@ -85,9 +77,10 @@ document.title = TITLE;
         audioBuffer.getChannelData(1).set(dummy);
         sound(audioBuffer);
         // start
+        canvas.focus();
         start();
     };
-    canvas.addEventListener('click', click, false);
+    document.querySelector("#overlay").addEventListener('click', click, false);
     let keydown = function (e) {
         keysNext[e.code] = true;
     }
@@ -96,8 +89,6 @@ document.title = TITLE;
         keysNext[e.code] = false;
     }
     canvas.addEventListener('keyup', keyup);
-    // start screen
-    message("NOW LOADING");
     // for fps print
     fps = 0;
     frame = FPS;
@@ -115,7 +106,8 @@ wasm().then(function(module) {
         // create buffer from wasm
         romdata = new Uint8Array(gens.HEAPU8.buffer, gens._get_rom_buffer_ref(bytes.byteLength), bytes.byteLength);
         romdata.set(new Uint8Array(bytes));
-        message("TOUCH HERE!");
+        document.querySelector("#overlay-top").innerText = `Welcome to ${TITLE}`;
+        document.querySelector("#overlay-bottom").innerText = "Click to start";
         initialized = true;
     });
 });
